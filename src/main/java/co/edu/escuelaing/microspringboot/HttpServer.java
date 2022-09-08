@@ -18,7 +18,8 @@ public class HttpServer {
             System.exit(1);
         }
         Socket clientSocket = null;
-        while (true) {
+        boolean flag = true;
+        while (flag) {
             try {
                 System.out.println("Listo para recibir ...");
                 clientSocket = serverSocket.accept();
@@ -44,7 +45,6 @@ public class HttpServer {
 
                 //MicroJunit.setArgs(.class);
 
-                boolean found = MicroJunit.searchInMap(path);
                 System.out.println("xxxxxxxxxxxxx " + path);
 
                     outputLine = "HTTP/1.1 200 OK\r\n"
@@ -59,7 +59,7 @@ public class HttpServer {
             clientSocket.close();
 
         }
-        //serverSocket.close();
+        serverSocket.close();
     }
 
     private static String getServiceOutput(String path) throws InvocationTargetException, IllegalAccessException {

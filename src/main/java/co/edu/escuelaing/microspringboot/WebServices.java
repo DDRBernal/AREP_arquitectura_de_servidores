@@ -7,4 +7,9 @@ public class WebServices {
         return "hello world";
     }
 
+    @RequestMapping(value = "/status")
+    public static String serverStatus(){
+        return "Running";
+    }
+
 }

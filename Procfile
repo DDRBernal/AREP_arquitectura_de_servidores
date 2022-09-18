@@ -1,1 +1,1 @@
-web: java -cp target/classes:target/dependency/* co.edu.escuelaing.microspringboot.HttpServer
+web java -cp target/classes:target/dependency/* co.edu.escuelaing.microspringboot.HttpServer

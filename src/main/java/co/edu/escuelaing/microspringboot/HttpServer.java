@@ -7,12 +7,12 @@ import java.lang.reflect.Method;
 
 public class HttpServer {
     //mvn exec:java -Dexec.mainClass="edu.escuelaing.arem.WebServer.HttpServer"
-
-    public static void main(String[] args) throws IOException, InvocationTargetException, IllegalAccessException, ClassNotFoundException {
-        MicroJunit.main(args);
+    //java -cp target/AREP_META_PROTOCOLOS-1.0-SNAPSHOT.jar co.edu.escuelaing.microspringboot.MicroJunit
+    //java -cp target/patronesReflexion-1.0-SNAPSHOT.jar edu.escuelaing.arem.app.nanoSpark.MicroSpringBoot
+    public void start() throws IOException, InvocationTargetException, IllegalAccessException, ClassNotFoundException {
         ServerSocket serverSocket = null;
         try {
-            serverSocket = new ServerSocket(35000);
+            serverSocket = new ServerSocket(getPort());
         } catch (IOException e) {
             System.err.println("Could not listen on port: 35000.");
             System.exit(1);
@@ -34,25 +34,21 @@ public class HttpServer {
             String inputLine, outputLine;
             String path = "";
             while ((inputLine = in.readLine()) != null) {
-                if (inputLine.startsWith("GET")) {
+                if (inputLine.startsWith("GET") && !inputLine.contains("/favicon.ico")) {
+                    System.out.println("--------------------------------------------");
                     path = inputLine.split(" ")[1];
-                    //path = inputLine.split(" ")[1];
+                    System.out.println("xxxxxxxxxxxxx " + path);
+                    outputLine = "HTTP/1.1 200 OK\r\n"
+                            + "Content-Type: text/html\r\n"
+                            + "\r\n"
+                            + getServiceOutput(path);
+                    out.println(outputLine);
                 }
                 System.out.println("Received: " + inputLine);
                 if (!in.ready()) {
                     break;
                 }
 
-                //MicroJunit.setArgs(.class);
-
-                System.out.println("xxxxxxxxxxxxx " + path);
-
-                    outputLine = "HTTP/1.1 200 OK\r\n"
-                            + "Content-Type: text/html\r\n"
-                            + "\r\n"
-                            + getServiceOutput(path);
-
-                out.println(outputLine);
             }
             out.close();
             in.close();
@@ -63,7 +59,7 @@ public class HttpServer {
     }
 
     private static String getServiceOutput(String path) throws InvocationTargetException, IllegalAccessException {
-        Method m = MicroJunit.getService(path);
+        String m = MicroJunit.invoke(path);
         return "<!DOCTYPE html>\n"  +
                 "<html lang=\"en\">\n" +
                 "<head>\n" +
@@ -76,7 +72,7 @@ public class HttpServer {
                 "    <div >\n" +
                 "        <div >\n" +
                 "            <h3>\n" +
-                "                 \n" + m.invoke(null) +
+                "                 \n" + m +
                 "            </h3>\n" +
                 "\n" +
                 "        </div>\n" +
@@ -137,5 +133,13 @@ public class HttpServer {
                 "\n" +
                 "</body>\n" +
                 "</html>";
+    }
+
+    public int getPort(){
+        int port = 35000;
+        if (System.getenv("PORT")!=null){
+            port = Integer.parseInt(System.getenv("PORT"));
+        }
+        return port;
     }
 }

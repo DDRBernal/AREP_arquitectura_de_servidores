@@ -5,9 +5,9 @@ package co.edu.escuelaing.microspringboot;
  */
 public class JunitTest{
 
-    @RequestMapping(value = "")
-    public static void m1(){
-
+    @RequestMapping(value = "/")
+    public static String index(){
+        return "Greetings from Spring boot";
     }
 
     @RequestMapping(value = "")

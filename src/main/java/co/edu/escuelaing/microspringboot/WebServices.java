@@ -12,4 +12,9 @@ public class WebServices {
         return "Running";
     }
 
+    @RequestMapping("/")
+    public static String index() {
+        return "Greetings from Spring Boot!";
+    }
+
 }

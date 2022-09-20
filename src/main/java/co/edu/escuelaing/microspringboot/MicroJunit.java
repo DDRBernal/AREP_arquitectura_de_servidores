@@ -10,6 +10,14 @@ public class MicroJunit {
     
     private static HashMap<String, Method> requests = new HashMap<>();
 
+    /**
+     * This method adds to a hashmap all the methods with annotation RequestMapping
+     * @param args
+     * @throws ClassNotFoundException
+     * @throws InvocationTargetException
+     * @throws IllegalAccessException
+     * @throws IOException
+     */
     public static void start(String[] args) throws ClassNotFoundException, InvocationTargetException, IllegalAccessException, IOException {
         String className = args[0];
         Class c = Class.forName(className);
@@ -23,7 +31,13 @@ public class MicroJunit {
         }
     }
 
-    //java -cp target/classes main.java.co.edu.escuelaing.microspringboot.MicroJunit main.java.co.edu.escuelaing.microspringboot.JunitTest
+    /**
+     * This method returns the Method from a path specific
+     * @param path
+     * @return String The Method converted to String
+     * @throws InvocationTargetException
+     * @throws IllegalAccessException
+     */
     public static String invoke(String path) throws InvocationTargetException, IllegalAccessException {
         return requests.get(path).invoke(null).toString();
     }

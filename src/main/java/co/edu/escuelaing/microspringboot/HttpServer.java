@@ -3,12 +3,18 @@ package co.edu.escuelaing.microspringboot;
 import java.lang.reflect.InvocationTargetException;
 import java.net.*;
 import java.io.*;
-import java.lang.reflect.Method;
 
 public class HttpServer {
     //mvn exec:java -Dexec.mainClass="edu.escuelaing.arem.WebServer.HttpServer"
-    //java -cp target/AREP_META_PROTOCOLOS-1.0-SNAPSHOT.jar co.edu.escuelaing.microspringboot.MicroJunit
-    //java -cp target/patronesReflexion-1.0-SNAPSHOT.jar edu.escuelaing.arem.app.nanoSpark.MicroSpringBoot
+    //java -cp target/AREP_META_PROTOCOLOS-1.0-SNAPSHOT.jar co.edu.escuelaing.microspringboot.SprintBoot
+
+    /**
+     * This method runs the server on port 35000 and showing an answer in the site
+     * @throws IOException
+     * @throws InvocationTargetException
+     * @throws IllegalAccessException
+     * @throws ClassNotFoundException
+     */
     public void start() throws IOException, InvocationTargetException, IllegalAccessException, ClassNotFoundException {
         ServerSocket serverSocket = null;
         try {
@@ -35,9 +41,7 @@ public class HttpServer {
             String path = "";
             while ((inputLine = in.readLine()) != null) {
                 if (inputLine.startsWith("GET") && !inputLine.contains("/favicon.ico")) {
-                    System.out.println("--------------------------------------------");
                     path = inputLine.split(" ")[1];
-                    System.out.println("xxxxxxxxxxxxx " + path);
                     outputLine = "HTTP/1.1 200 OK\r\n"
                             + "Content-Type: text/html\r\n"
                             + "\r\n"
@@ -58,8 +62,15 @@ public class HttpServer {
         serverSocket.close();
     }
 
+    /**
+      This method shows the method's message from webService, depends on what he received like parameter
+     * @param path
+     * @return String HTML body
+     * @throws InvocationTargetException
+     * @throws IllegalAccessException
+     */
     private static String getServiceOutput(String path) throws InvocationTargetException, IllegalAccessException {
-        String m = MicroJunit.invoke(path);
+        String method = MicroJunit.invoke(path);
         return "<!DOCTYPE html>\n"  +
                 "<html lang=\"en\">\n" +
                 "<head>\n" +
@@ -72,7 +83,7 @@ public class HttpServer {
                 "    <div >\n" +
                 "        <div >\n" +
                 "            <h3>\n" +
-                "                 \n" + m +
+                "                 \n" + method +
                 "            </h3>\n" +
                 "\n" +
                 "        </div>\n" +
@@ -86,55 +97,10 @@ public class HttpServer {
 
     }
 
-    public static String getHtml(String path){
-        System.out.println(ReadFile.readFiles(path));
-        return ReadFile.readFiles(path);
-    }
-
-    public static String getForm(){
-
-        return "<!DOCTYPE html>\n" +
-                "<html lang=\"en\">\n" +
-                "<head>\n" +
-                "    <meta charset=\"UTF-8\">\n" +
-                "    <title>AREP</title>\n" +
-                "</head>\n" +
-                "<body>\n" +
-                "<script language=\"JavaScript\" type=\"text/javascript\" src=\"./Scripts/connection.js\"></script>\n" +
-                "<main class=\"main-container\">\n" +
-                "    <h1 class=\"title\">Consult the stock market of the shares traded on the Stock Exchange</h1>\n" +
-                "\n" +
-                "    <div >\n" +
-                "        <div >\n" +
-                "            <h3>\n" +
-                "                Type the word of a share traded\n" +
-                "            </h3>\n" +
-                "            <input type=\"text\" id=word_share_traded placeholder=\"For example MSFT\">\n" +
-                "\n" +
-                "            <button type=\"button\" onclick=\"getData()\">Search</button>\n" +
-                "\n" +
-                "            <input type=\"radio\" name=\"time\" id=\"Time_Series_Daily\" checked>\n" +
-                "            <label for=\"Time_Series_Daily\"> Daily </label>\n" +
-                "\n" +
-                "            <input type=\"radio\" name=\"time\" id=\"Time_Series_Weekly\">\n" +
-                "            <label for=\"Time_Series_Weekly\"> Weekly </label>\n" +
-                "\n" +
-                "            <input type=\"radio\" name=\"time\" id=\"Time_Series_Monthly\">\n" +
-                "            <label for=\"Time_Series_Monthly\"> Monthly </label>\n" +
-                "        </div>\n" +
-                "        <table cellspacing=\"4\" width=\"90%\">\n" +
-                "            <pre id=\"table_elements\">\n" +
-                "            </pre>\n" +
-                "        </table>\n" +
-                "\n" +
-                "\n" +
-                "    </div>\n" +
-                "</main>\n" +
-                "\n" +
-                "</body>\n" +
-                "</html>";
-    }
-
+    /**
+     * This method gets the value of the specified environment variable, if is null returns 35000 by default
+     * @return int PORT
+     */
     public int getPort(){
         int port = 35000;
         if (System.getenv("PORT")!=null){

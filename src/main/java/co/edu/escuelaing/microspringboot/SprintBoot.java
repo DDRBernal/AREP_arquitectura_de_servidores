@@ -7,7 +7,7 @@ import java.util.HashMap;
 
 public class SprintBoot {
     /**
-     *
+     * The main, by default we pass the path of the webServices class
      * @param args
      * @throws IOException
      * @throws ClassNotFoundException

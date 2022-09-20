@@ -41,18 +41,12 @@ public class HttpServer {
             String path = "";
             while ((inputLine = in.readLine()) != null) {
                 if (inputLine.startsWith("GET") && !inputLine.contains("/favicon.ico")) {
-                    path = inputLine.split(" ")[1];
-                    outputLine = "HTTP/1.1 200 OK\r\n"
-                            + "Content-Type: text/html\r\n"
-                            + "\r\n"
-                            + getServiceOutput(path);
-                    out.println(outputLine);
+                    getServiceOutput(out,inputLine,clientSocket.getOutputStream());
                 }
                 System.out.println("Received: " + inputLine);
                 if (!in.ready()) {
                     break;
                 }
-
             }
             out.close();
             in.close();
@@ -63,37 +57,38 @@ public class HttpServer {
     }
 
     /**
-      This method shows the method's message from webService, depends on what he received like parameter
-     * @param path
+     * This method shows the method's message from webService, depends on what he received like parameter
+     *
+     * @param out
+     * @param inputLine
+     * @param outputStream
      * @return String HTML body
      * @throws InvocationTargetException
      * @throws IllegalAccessException
      */
-    private static String getServiceOutput(String path) throws InvocationTargetException, IllegalAccessException {
-        String method = MicroJunit.invoke(path);
-        return "<!DOCTYPE html>\n"  +
-                "<html lang=\"en\">\n" +
-                "<head>\n" +
-                "    <meta charset=\"UTF-8\">\n" +
-                "    <title>AREP</title>\n" +
-                "</head>\n" +
-                "<body>\n" +
-                "<main class=\"main-container\">\n" +
-                "\n" +
-                "    <div >\n" +
-                "        <div >\n" +
-                "            <h3>\n" +
-                "                 \n" + method +
-                "            </h3>\n" +
-                "\n" +
-                "        </div>\n" +
-                "\n" +
-                "\n" +
-                "    </div>\n" +
-                "</main>\n" +
-                "\n" +
-                "</body>\n" +
-                "</html>";
+    private static void getServiceOutput(PrintWriter out, String inputLine, OutputStream outputStream) throws InvocationTargetException, IllegalAccessException {
+        String path = inputLine.split(" ")[1];
+        String outputLine = "HTTP/1.1 200 OK\r\n"
+                + "Content-Type: text/html\r\n"
+                + "\r\n";
+        if (path.contains("pages")) {
+            System.out.println(path);
+            if (path.equals("/pages/")){
+                ReadFile.getImage(path,outputStream);
+            }
+            else if (path.contains("png")){
+                String newPath = path.split("/")[2];
+                System.out.println("wtffff "+newPath);
+                ReadFile.getImage(newPath,outputStream);
+            } else{
+                String newPath = path.split("/")[2];
+                outputLine += ReadFile.readFiles(newPath);
+                out.println(outputLine);
+            }
+        }else{
+            outputLine += MicroJunit.invoke(path);
+            out.println(outputLine);
+        }
 
     }
 

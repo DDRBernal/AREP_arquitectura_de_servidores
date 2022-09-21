@@ -1,7 +1,5 @@
-# AREP_arquitectura_de_servidores
+# AREP arquitectura de servidores
 # Descripción
-<<<<<<< HEAD
-=======
 
 Para este taller se implementara un servidor Web (tipo Apache) en Java. El servidor debe ser capaz de entregar páginas html e imágenes tipo PNG. Igualmente el servidor debe proveer un framework IoC para la construcción de aplicaciones web a partir de POJOS. Usando el servidor se debe construir una aplicación Web de ejemplo y desplegarlo en Heroku. El servidor debe atender múltiples solicitudes no concurrentes.
 
@@ -39,17 +37,17 @@ o con el comando antes mencionado
 
 Veremos un mensaje por default, podremos visualizar diferentes mensajes agregando al url lo siguiente, 
 
-** /status
+/status
 
-** /hello
+/hello
 
-** /status
+/status
 
 ![image](https://user-images.githubusercontent.com/46855679/191394042-a0b91f9c-4f43-422f-82f2-c2911adb7c96.png)
 
 Si se desea también se pueden ver imágenes en formato PNG, para ellos agregaremos 
 
-** /page/nombre_imagen.PNG
+/page/nombre_imagen.PNG
 
 Las imágenes que tenemos disponibles se encuentran en la siguiente carpeta
 
@@ -64,11 +62,9 @@ Si no especificamos una imagen, nos lanzara una imagen por default
 ![image](https://user-images.githubusercontent.com/46855679/191399316-080b7581-6740-4872-b560-ae97502e2b29.png)
 
 # Documentación
->>>>>>> c46528fb220ae51e5799d138712352f2d4372def
 
 Para este taller se implementara un servidor Web (tipo Apache) en Java. El servidor debe ser capaz de entregar páginas html e imágenes tipo PNG. Igualmente el servidor debe proveer un framework IoC para la construcción de aplicaciones web a partir de POJOS. Usando el servidor se debe construir una aplicación Web de ejemplo y desplegarlo en Heroku. El servidor debe atender múltiples solicitudes no concurrentes.
 
-<<<<<<< HEAD
 # Prerequisitos del sistemas
 - Maven
 - Git
@@ -137,8 +133,6 @@ Si el archivo especificado no existe, arrojara un html por defecto.
 
 # Documentación
 
-=======
->>>>>>> c46528fb220ae51e5799d138712352f2d4372def
 Para crear la documentación, lo podremos hacer con ayuda del siguiente comando:
 
 `mvn javadoc:javadoc`
@@ -146,11 +140,7 @@ Para crear la documentación, lo podremos hacer con ayuda del siguiente comando:
 # Tecnologías usadas
 
 - Intellij IDEA
-<<<<<<< HEAD
-- Heroku
-=======
 - Heroku 
->>>>>>> c46528fb220ae51e5799d138712352f2d4372def
 - Maven
 - Java 18
 

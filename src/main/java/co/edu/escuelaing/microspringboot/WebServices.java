@@ -17,4 +17,8 @@ public class WebServices {
         return "Greetings from Spring Boot!";
     }
 
+    @RequestMapping("index")
+    public static String html() {return "";}
+
+
 }

@@ -5,9 +5,8 @@ import java.net.*;
 import java.io.*;
 
 public class HttpServer {
-    //mvn exec:java -Dexec.mainClass="edu.escuelaing.arem.WebServer.HttpServer"
-    //java -cp target/AREP_META_PROTOCOLOS-1.0-SNAPSHOT.jar co.edu.escuelaing.microspringboot.SprintBoot
 
+    private static RequestReader requestReader;
     /**
      * This method runs the server on port 35000 and showing an answer in the site
      * @throws IOException
@@ -16,6 +15,7 @@ public class HttpServer {
      * @throws ClassNotFoundException
      */
     public void start() throws IOException, InvocationTargetException, IllegalAccessException, ClassNotFoundException {
+        requestReader = new RequestReader();
         ServerSocket serverSocket = null;
         try {
             serverSocket = new ServerSocket(getPort());
@@ -40,10 +40,12 @@ public class HttpServer {
             String inputLine, outputLine;
             String path = "";
             while ((inputLine = in.readLine()) != null) {
-                if (inputLine.startsWith("GET") && !inputLine.contains("/favicon.ico")) {
-                    getServiceOutput(out,inputLine,clientSocket.getOutputStream());
+                requestReader.readPath(inputLine);
+                if (!requestReader.getResponse().equals("")) {
+                    getServiceOutput(out, requestReader.getResponse(), clientSocket.getOutputStream());
                 }
-                System.out.println("Received: " + inputLine);
+                requestReader.setResponse("");
+
                 if (!in.ready()) {
                     break;
                 }
@@ -51,7 +53,6 @@ public class HttpServer {
             out.close();
             in.close();
             clientSocket.close();
-
         }
         serverSocket.close();
     }
@@ -60,35 +61,47 @@ public class HttpServer {
      * This method shows the method's message from webService, depends on what he received like parameter
      *
      * @param out
-     * @param inputLine
+     * @param path
      * @param outputStream
      * @return String HTML body
      * @throws InvocationTargetException
      * @throws IllegalAccessException
      */
-    private static void getServiceOutput(PrintWriter out, String inputLine, OutputStream outputStream) throws InvocationTargetException, IllegalAccessException {
-        String path = inputLine.split(" ")[1];
+    private static void getServiceOutput(PrintWriter out, String path, OutputStream outputStream) throws InvocationTargetException, IllegalAccessException {
         String outputLine = "HTTP/1.1 200 OK\r\n"
                 + "Content-Type: text/html\r\n"
                 + "\r\n";
-        if (path.contains("pages")) {
-            System.out.println(path);
-            if (path.equals("/pages/")){
-                ReadFile.getImage(path,outputStream);
-            }
-            else if (path.contains("png")){
-                String newPath = path.split("/")[2];
-                System.out.println("wtffff "+newPath);
-                ReadFile.getImage(newPath,outputStream);
-            } else{
-                String newPath = path.split("/")[2];
-                outputLine += ReadFile.readFiles(newPath);
+        String[] responses = requestReader.evaluePath(path);
+        switch (responses[0]){
+            case "image":
+                ReadFile.getImage(responses[1],outputStream);
+                break;
+            case "html":
+                outputLine += ReadFile.readFiles(responses[1]);
                 out.println(outputLine);
-            }
-        }else{
-            outputLine += MicroJunit.invoke(path);
-            out.println(outputLine);
+                break;
+            case "text":
+                outputLine += MicroJunit.invoke(path);
+                out.println(outputLine);
+                break;
         }
+
+//        if (path.contains("pages")) {
+//            if (path.equals("/pages/")){
+//                ReadFile.getImage(path,outputStream);
+//            }
+//            else if (path.contains("png")){
+//                String newPath = path.split("/")[2];
+//                ReadFile.getImage(newPath,outputStream);
+//            } else{
+//                String newPath = path.split("/")[2];
+//                outputLine += ReadFile.readFiles(newPath);
+//                out.println(outputLine);
+//            }
+//        }else{
+//            outputLine += MicroJunit.invoke(path);
+//            out.println(outputLine);
+//        }
 
     }
 
